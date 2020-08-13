@@ -1,2 +1,2 @@
-# tasker
-TaskeR is an to-do-list app created while studying React Native
+# TaskeR
+TaskeR is a to-do-list app created while studying React Native
