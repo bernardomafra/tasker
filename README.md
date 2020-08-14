@@ -1,9 +1,8 @@
 # TaskeR
-### Made using React Native, first time trying mobile development
+### TaskeR is a to-do-list app made with React Native.
 
 ![Logo](/android/app/src/main/res/mipmap-xxxhdpi/logo.png)
 
-TaskeR is a to-do-list app.
 
 # Techs:
  - React Native v0.63  https://www.npmjs.com/package/react-native/v/0.63.2
