@@ -1,75 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, Animated, Alert, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
-import AsyncStorage from "@react-native-community/async-storage";
+import React, { useContext, useEffect } from 'react';
+import { View, TextInput, Image, TouchableOpacity } from 'react-native';
+
 import smallLogo from '../../public/assets/small-logo.png'
-import styles from './styles'
+
 import Icon from 'react-native-vector-icons/FontAwesome';
-import DraggableFlatList from 'react-native-draggable-dynamic-flatlist'
+import DraggableList from '../../components/DraggableList';
+import Task from '../../components/Task';
+
+import TasksContext from '../../handlers/tasks'
+
+import styles from './styles'
 
 const TasksPage = ({ navigation }) => {
-  const [newTask, setNewTask] = useState({ key: '' })
-  const [tasksArray, setInTasksArray] = useState([])
-
-  async function addTask() {
-    const search = tasksArray.filter(task => task.key === newTask.key);
-
-    if (search.length !== 0) {
-      Alert.alert("Atenção", "Nome da tarefa repetido!");
-      return;
-    }
-
-    setInTasksArray([...tasksArray, newTask]);
-    setNewTask({ key: '' });
-
-    Keyboard.dismiss();
-  }
-
-  async function removeTask(item) {
-    Alert.alert(
-      "Deletar Task",
-      "Tem certeza que deseja remover esta anotação?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {
-            return;
-          },
-          style: "cancel"
-        },
-        {
-          text: "OK",
-          onPress: () => setInTasksArray(tasksArray.filter(tasks => tasks !== item))
-        }
-      ],
-      { cancelable: false }
-    );
-  }
-
-  const handleSetTaskAsChecked = (clickedTaskKey) => {
-    const clicked = tasksArray.find(t => t.key === clickedTaskKey)
-    clicked.checked = !clicked.checked
-
-    const newArray = tasksArray.map(task => task.key === clickedTaskKey ? clicked : task)
-
-    setInTasksArray(newArray)
-  }
+  const {
+    handleAddTask,
+    handleRemoveTask,
+    handleSetTaskAsChecked,
+    handleTaskInputChange,
+    newTask,
+    tasksArray,
+    setInTasksArray
+  } = useContext(TasksContext)
 
   useEffect(() => {
-    async function carregaDados() {
-      const tasks = await AsyncStorage.getItem("tasksArray");
-      if (tasks) {
-        setInTasksArray(JSON.parse(tasks));
-      }
-    }
-    carregaDados();
-  }, []);
-
-  useEffect(() => {
-    async function salvaDados() {
-      AsyncStorage.setItem("tasksArray", JSON.stringify(tasksArray));
-    }
-    salvaDados();
-  }, [tasksArray]);
+    console.log(
+      handleAddTask,
+      handleRemoveTask,
+      handleSetTaskAsChecked,
+      handleTaskInputChange,
+      newTask,
+      tasksArray,
+      setInTasksArray)
+  }, [])
 
   return (
     <View style={styles().container}>
@@ -80,32 +42,22 @@ const TasksPage = ({ navigation }) => {
         <Image source={smallLogo} style={styles().img} />
       </View>
       <View style={styles().listContainer}>
-        <DraggableFlatList
-          scrollPercent={5}
-          keyExtractor={(item) => `draggable-item-${item.key}`}
-          data={tasksArray}
-          onMoveEnd={({ data }) => setInTasksArray(data)}
-          renderItem={({ item, move, moveEnd }) => (
-            <TouchableOpacity
-              style={styles(item?.checked).listItem}
-              onLongPress={move}
-              onPressOut={moveEnd}
-            >
-              {item?.checked && <Text style={styles().taskDone}>[DONE]</Text>}
-              <Text style={styles(item?.checked).listText}>{item.key}</Text>
-              <View style={styles().iconsContainer}>
-                <Icon name={item?.checked ? "check-square" : "square-o"} size={30} color="#FFFFFF" style={styles().done} onPress={() => handleSetTaskAsChecked(item.key)} />
-                <Icon name="trash" size={30} color="#FFFFFF" style={styles().trash} onPress={() => removeTask(item)} />
-              </View>
-            </TouchableOpacity>
-          )}
+        <DraggableList
+          data={tasksArray || []}
+          customListItem={
+            <Task
+              handleSetTaskAsChecked={handleSetTaskAsChecked}
+              handleRemoveTask={handleRemoveTask}
+            />
+          }
+          reorderStateAfterDragging={setInTasksArray}
         />
       </View>
       <View style={styles().textContainer}>
-        <TextInput style={styles().inputNewTask} onChangeText={text => setNewTask({ key: text, checked: false })}
-          value={newTask?.key} />
+        <TextInput style={styles().inputNewTask} onChangeText={handleTaskInputChange}
+          value={newTask?.name} />
         <TouchableOpacity style={styles().button} >
-          <Icon name="plus" color="#FFFFFF" size={30} onPress={addTask} />
+          <Icon name="plus" color="#FFFFFF" size={30} onPress={handleAddTask} />
         </TouchableOpacity>
       </View>
     </View >
