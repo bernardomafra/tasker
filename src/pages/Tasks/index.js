@@ -45,10 +45,12 @@ const TasksPage = ({ navigation }) => {
     );
   }
 
-  const handleSetTaskAsChecked = (clickedTask) => {
-    const newArray = tasksArray.map(task => {
-      return { ...task, checked: task.checked || task.key === clickedTask }
-    })
+  const handleSetTaskAsChecked = (clickedTaskKey) => {
+    const clicked = tasksArray.find(t => t.key === clickedTaskKey)
+    clicked.checked = !clicked.checked
+
+    const newArray = tasksArray.map(task => task.key === clickedTaskKey ? clicked : task)
+
     setInTasksArray(newArray)
   }
 
@@ -83,9 +85,10 @@ const TasksPage = ({ navigation }) => {
           data={tasksArray}
           renderItem={({ item }) => (
             <View style={styles(item?.checked).listItem}>
+              {item?.checked && <Text style={styles().taskDone}>[DONE]</Text>}
               <Text style={styles(item?.checked).listText}>{item.key}</Text>
               <View style={styles().iconsContainer}>
-                <Icon name="check-square" size={30} color="#FFFFFF" style={styles().done} onPress={() => handleSetTaskAsChecked(item.key)} />
+                <Icon name={item?.checked ? "check-square" : "square-o"} size={30} color="#FFFFFF" style={styles().done} onPress={() => handleSetTaskAsChecked(item.key)} />
                 <Icon name="trash" size={30} color="#FFFFFF" style={styles().trash} onPress={() => removeTask(item)} />
               </View>
             </View>
@@ -93,7 +96,7 @@ const TasksPage = ({ navigation }) => {
         />
       </View>
       <View style={styles().textContainer}>
-        <TextInput style={styles().inputNewTask} onChangeText={text => setNewTask({ key: text })}
+        <TextInput style={styles().inputNewTask} onChangeText={text => setNewTask({ key: text, checked: false })}
           value={newTask?.key} />
         <TouchableOpacity style={styles().button} >
           <Icon name="plus" color="#FFFFFF" size={30} onPress={addTask} />

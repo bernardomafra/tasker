@@ -52,6 +52,7 @@ const styles = (checked) => StyleSheet.create({
     paddingBottom: 0,
     marginBottom: 0,
     fontSize: 17,
+    alignSelf: "center",
     flex: 1,
     color: "white",
     textDecorationLine: `${checked ? 'line-through' : 'none'}`
@@ -70,6 +71,12 @@ const styles = (checked) => StyleSheet.create({
     color: "white",
     fontFamily: "Cairo",
     fontWeight: "600"
+  },
+  taskDone: {
+    color: 'gray',
+    paddingRight: 10,
+    alignSelf: 'center',
+    fontWeight: 'bold'
   },
   textContainer: {
     padding: 0,
