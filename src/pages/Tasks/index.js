@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, Alert, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
+import { View, TextInput, FlatList, Animated, Alert, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
 import AsyncStorage from "@react-native-community/async-storage";
 import smallLogo from '../../public/assets/small-logo.png'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import DraggableFlatList from 'react-native-draggable-dynamic-flatlist'
 
 const TasksPage = ({ navigation }) => {
   const [newTask, setNewTask] = useState({ key: '' })
@@ -57,7 +57,6 @@ const TasksPage = ({ navigation }) => {
   useEffect(() => {
     async function carregaDados() {
       const tasks = await AsyncStorage.getItem("tasksArray");
-
       if (tasks) {
         setInTasksArray(JSON.parse(tasks));
       }
@@ -81,17 +80,24 @@ const TasksPage = ({ navigation }) => {
         <Image source={smallLogo} style={styles().img} />
       </View>
       <View style={styles().listContainer}>
-        <FlatList
+        <DraggableFlatList
+          scrollPercent={5}
+          keyExtractor={(item) => `draggable-item-${item.key}`}
           data={tasksArray}
-          renderItem={({ item }) => (
-            <View style={styles(item?.checked).listItem}>
+          onMoveEnd={({ data }) => setInTasksArray(data)}
+          renderItem={({ item, move, moveEnd }) => (
+            <TouchableOpacity
+              style={styles(item?.checked).listItem}
+              onLongPress={move}
+              onPressOut={moveEnd}
+            >
               {item?.checked && <Text style={styles().taskDone}>[DONE]</Text>}
               <Text style={styles(item?.checked).listText}>{item.key}</Text>
               <View style={styles().iconsContainer}>
                 <Icon name={item?.checked ? "check-square" : "square-o"} size={30} color="#FFFFFF" style={styles().done} onPress={() => handleSetTaskAsChecked(item.key)} />
                 <Icon name="trash" size={30} color="#FFFFFF" style={styles().trash} onPress={() => removeTask(item)} />
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>

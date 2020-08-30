@@ -5807,6 +5807,16 @@ react-native-cli@^2.0.1:
     prompt "^0.2.14"
     semver "^5.0.3"
 
+react-native-draggable-dynamic-flatlist@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-dynamic-flatlist/-/react-native-draggable-dynamic-flatlist-1.0.4.tgz#9195ffb6220edeedabed7fb2069779013503c7f7"
+  integrity sha512-FSpwSaN6riqqLF70izzcQOZ5D+LvYWV0EzFWll5tBtIzLWI88tXrwFd/rNH8IKl3X5Bd4pl2MNUCEbP1LO51xw==
+
+react-native-draggable-flatlist@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-2.3.6.tgz#e5c5f449ce9d392777cbf29b7da6d8da783d536d"
+  integrity sha512-kaLUx2TWyCx62Fnrc4299vYIZNXEB9fQT/x/BHGb5QTnBGvTjq/qShdsgvYlgX2SzcXpIFR6Js0v9Uq/xFvE+A==
+
 react-native-gesture-handler@^1.2.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.7.0.tgz#0ef74a5ba836832e497dc49eb1ce58baa6c617e5"

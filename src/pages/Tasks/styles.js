@@ -97,6 +97,12 @@ const styles = (checked) => StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: "#e3e3e3"
+  },
+  dragged: {
+    height: 100,
+    backgroundColor: checked ? "blue" : 'white',
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
 
