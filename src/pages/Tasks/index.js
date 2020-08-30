@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, AsyncStorage, Alert, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
-
+import { View, TextInput, FlatList, Alert, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
+import AsyncStorage from "@react-native-community/async-storage";
 import smallLogo from '../../public/assets/small-logo.png'
 import styles from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const TasksPage = ({ navigation }) => {
-
   const [newTask, setNewTask] = useState({ key: '' })
   const [tasksArray, setInTasksArray] = useState([])
 
