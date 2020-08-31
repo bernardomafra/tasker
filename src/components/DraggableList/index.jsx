@@ -19,7 +19,7 @@ const DraggableList = ({ data, customListItem, reorderStateAfterDragging }) => (
 );
 
 DraggableList.propTypes = {
-  data: PropTypes.arrayOf({}).isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   customListItem: PropTypes.node.isRequired,
   reorderStateAfterDragging: PropTypes.func.isRequired,
 };
