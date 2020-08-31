@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { View, TextInput, Image, TouchableOpacity } from 'react-native';
 
 import smallLogo from '../../public/assets/small-logo.png'
@@ -21,17 +21,6 @@ const TasksPage = ({ navigation }) => {
     tasksArray,
     setInTasksArray
   } = useContext(TasksContext)
-
-  useEffect(() => {
-    console.log(
-      handleAddTask,
-      handleRemoveTask,
-      handleSetTaskAsChecked,
-      handleTaskInputChange,
-      newTask,
-      tasksArray,
-      setInTasksArray)
-  }, [])
 
   return (
     <View style={styles().container}>

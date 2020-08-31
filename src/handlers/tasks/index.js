@@ -32,7 +32,6 @@ export const TasksProvider = ({ children }) => {
   }
 
   async function handleAddTask() {
-    console.log('entrei')
     const search = tasksArray.filter(task => task.name === newTask.name);
 
     if (search.length !== 0) {
@@ -42,7 +41,6 @@ export const TasksProvider = ({ children }) => {
 
     setInTasksArray([...tasksArray, newTask]);
     setNewTask({ name: '' });
-    console.log(tasksArray)
     Keyboard.dismiss();
   }
 
