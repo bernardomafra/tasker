@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import smallLogo from '../../public/assets/small-logo.png';
 
 import DraggableList from '../../components/DraggableList';
@@ -18,8 +19,13 @@ const TasksPage = ({ navigation }) => {
   const {
     handleAddTask,
     handleRemoveTask,
+    handleEditTask,
+    handleClearAllTasks,
     handleSetTaskAsChecked,
     handleTaskInputChange,
+    handleStopEditting,
+    keyboardRef,
+    isTaskBeingEditted,
     newTask,
     tasksArray,
     setInTasksArray,
@@ -33,10 +39,18 @@ const TasksPage = ({ navigation }) => {
             onPress={() => navigation.navigate('HomePage')}
             name="arrow-left"
             color="white"
-            size={20}
+            size={30}
           />
         </TouchableOpacity>
         <Image source={smallLogo} style={styles().img} />
+        <TouchableOpacity>
+          <MaterialCommunityIcon
+            onPress={handleClearAllTasks}
+            name="broom"
+            color="white"
+            size={30}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles().listContainer}>
         <DraggableList
@@ -45,6 +59,7 @@ const TasksPage = ({ navigation }) => {
             <Task
               handleSetTaskAsChecked={handleSetTaskAsChecked}
               handleRemoveTask={handleRemoveTask}
+              handleEditTask={handleEditTask}
             />
           )}
           reorderStateAfterDragging={setInTasksArray}
@@ -52,12 +67,19 @@ const TasksPage = ({ navigation }) => {
       </View>
       <View style={styles().textContainer}>
         <TextInput
-          style={styles().inputNewTask}
+          ref={keyboardRef}
+          style={styles(isTaskBeingEditted).inputNewTask}
           onChangeText={handleTaskInputChange}
           value={newTask?.name}
         />
+        {isTaskBeingEditted
+        && (
+          <TouchableOpacity style={styles().button}>
+            <Icon name="close" color="#FFFFFF" size={30} onPress={handleStopEditting} />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity style={styles().button}>
-          <Icon name="plus" color="#FFFFFF" size={30} onPress={handleAddTask} />
+          <Icon name={isTaskBeingEditted ? 'pencil' : 'plus'} color="#FFFFFF" size={30} onPress={handleAddTask} />
         </TouchableOpacity>
       </View>
     </View>
