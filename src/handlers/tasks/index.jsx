@@ -1,4 +1,6 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, {
+  createContext, useState, useEffect, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import { Alert, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -6,8 +8,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 const TasksContext = createContext(null);
 
 export const TasksProvider = ({ children }) => {
-  const [newTask, setNewTask] = useState({ name: '' });
+  const [newTask, setNewTask] = useState({ name: '', checked: false, id: 0 });
   const [tasksArray, setInTasksArray] = useState([]);
+  const [isTaskBeingEditted, setIsTaskBeingEditted] = useState(false);
+  const [idCounter, setIdCounter] = useState(0);
+  const keyboardRef = useRef();
 
   async function handleDataLoad() {
     const tasks = await AsyncStorage.getItem('tasksArray');
@@ -36,8 +41,23 @@ export const TasksProvider = ({ children }) => {
       return;
     }
 
+    if (isTaskBeingEditted) {
+      const newTasks = tasksArray.reduce((prev, curr) => [
+        ...prev,
+        {
+          ...curr,
+          name: curr.id === newTask.id ? newTask.name : curr.name,
+        },
+      ], []);
+      setInTasksArray(newTasks);
+      return;
+    }
+
+    setIdCounter((prev) => prev + 1);
+    newTask.id = idCounter;
     setInTasksArray([...tasksArray, newTask]);
-    setNewTask({ name: '' });
+    setNewTask({ name: '', checked: false, id: 0 });
+    setIsTaskBeingEditted(false);
     Keyboard.dismiss();
   }
 
@@ -55,14 +75,56 @@ export const TasksProvider = ({ children }) => {
         },
         {
           text: 'OK',
-          onPress: () => setInTasksArray(
-            tasksArray.filter((task) => task.name !== item.name),
-          ),
+          onPress: () => {
+            setInTasksArray(
+              tasksArray.filter((task) => task.name !== item.name),
+            );
+          },
         },
       ],
       { cancelable: false },
     );
   }
+
+  const handleEditTask = (task) => {
+    setIsTaskBeingEditted(true);
+    setNewTask(task);
+    keyboardRef.current.focus();
+  };
+
+  const handleStopEditting = () => {
+    setIsTaskBeingEditted(false);
+    setNewTask({ name: '', checked: false, id: 0 });
+    setIsTaskBeingEditted(false);
+    Keyboard.dismiss();
+  };
+
+  const handleClearAllTasks = () => {
+    if (!tasksArray.length) {
+      return;
+    }
+
+    Alert.alert(
+      'Limpar lista',
+      'Tem certeza que deseja remover todas as tarefas ?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Ok',
+          onPress: () => {
+            setInTasksArray([]);
+            setNewTask({ name: '', checked: false, id: 0 });
+            AsyncStorage.clear();
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+  };
 
   const handleSetTaskAsChecked = (clickedTaskName) => {
     const clicked = tasksArray.find((t) => t.name === clickedTaskName);
@@ -74,7 +136,12 @@ export const TasksProvider = ({ children }) => {
   };
 
   const handleTaskInputChange = (text) => {
-    setNewTask({ name: text, checked: false });
+    let task = { name: text, checked: false, id: idCounter };
+    if (isTaskBeingEditted) {
+      task = { name: text, checked: false, id: newTask.id };
+    }
+
+    setNewTask(task);
   };
 
   return (
@@ -84,7 +151,13 @@ export const TasksProvider = ({ children }) => {
         handleRemoveTask,
         handleSetTaskAsChecked,
         handleTaskInputChange,
+        handleStopEditting,
         setInTasksArray,
+        handleEditTask,
+        handleClearAllTasks,
+        setIsTaskBeingEditted,
+        isTaskBeingEditted,
+        keyboardRef,
         newTask,
         tasksArray,
       }}
