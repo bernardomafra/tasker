@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './styles';
 
 const Task = ({
-  item, move, moveEnd, handleSetTaskAsChecked, handleRemoveTask,
+  item, move, moveEnd, handleSetTaskAsChecked, handleRemoveTask, handleEditTask,
 }) => (
   <TouchableOpacity
     style={styles(item?.checked).listItem}
@@ -16,7 +16,7 @@ const Task = ({
     {item?.checked && <Text style={styles().taskDone}>[DONE]</Text>}
     <Text style={styles(item?.checked).listText}>{item.name}</Text>
     <View style={styles().iconsContainer}>
-      <Icon name="pencil" size={30} color="#FFFFFF" />
+      <Icon name="pencil" size={30} color="#FFFFFF" onPress={() => handleEditTask(item)} />
       <Icon name={item?.checked ? 'check-square' : 'square-o'} size={30} color="#FFFFFF" style={styles().done} onPress={() => handleSetTaskAsChecked(item.name)} />
       <Icon name="trash" size={30} color="#FFFFFF" style={styles().trash} onPress={() => handleRemoveTask(item)} />
     </View>
@@ -32,6 +32,7 @@ Task.propTypes = {
   moveEnd: PropTypes.func,
   handleSetTaskAsChecked: PropTypes.func.isRequired,
   handleRemoveTask: PropTypes.func.isRequired,
+  handleEditTask: PropTypes.func.isRequired,
 };
 
 Task.defaultProps = {
