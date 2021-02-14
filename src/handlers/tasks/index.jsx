@@ -33,8 +33,21 @@ export const TasksProvider = ({ children }) => {
     handleSaveData();
   }, [tasksArray]);
 
+  const handleEditTask = (task) => {
+    setIsTaskBeingEditted(true);
+    setNewTask(task);
+    keyboardRef.current.focus();
+  };
+
+  const handleStopEditting = () => {
+    setIsTaskBeingEditted(false);
+    setNewTask({ name: '', checked: false, id: 0 });
+    setIsTaskBeingEditted(false);
+    Keyboard.dismiss();
+  };
+
   async function handleAddTask() {
-    const search = tasksArray.filter((task) => task.name === newTask.name);
+    const search = tasksArray?.filter((task) => task.name === newTask.name);
 
     if (search.length !== 0) {
       Alert.alert('Atenção', 'Nome da tarefa repetido!');
@@ -50,6 +63,7 @@ export const TasksProvider = ({ children }) => {
         },
       ], []);
       setInTasksArray(newTasks);
+      handleStopEditting();
       return;
     }
 
@@ -77,7 +91,7 @@ export const TasksProvider = ({ children }) => {
           text: 'OK',
           onPress: () => {
             setInTasksArray(
-              tasksArray.filter((task) => task.name !== item.name),
+              tasksArray?.filter((task) => task.name !== item.name),
             );
           },
         },
@@ -86,21 +100,8 @@ export const TasksProvider = ({ children }) => {
     );
   }
 
-  const handleEditTask = (task) => {
-    setIsTaskBeingEditted(true);
-    setNewTask(task);
-    keyboardRef.current.focus();
-  };
-
-  const handleStopEditting = () => {
-    setIsTaskBeingEditted(false);
-    setNewTask({ name: '', checked: false, id: 0 });
-    setIsTaskBeingEditted(false);
-    Keyboard.dismiss();
-  };
-
   const handleClearAllTasks = () => {
-    if (!tasksArray.length) {
+    if (!tasksArray?.length) {
       return;
     }
 

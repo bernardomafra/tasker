@@ -79,7 +79,7 @@ const TasksPage = ({ navigation }) => {
           </TouchableOpacity>
         )}
         <TouchableOpacity style={styles().button}>
-          <Icon name={isTaskBeingEditted ? 'pencil' : 'plus'} color="#FFFFFF" size={30} onPress={handleAddTask} />
+          <Icon name={isTaskBeingEditted ? 'check-square' : 'plus'} color="#FFFFFF" size={30} onPress={handleAddTask} />
         </TouchableOpacity>
       </View>
     </View>
